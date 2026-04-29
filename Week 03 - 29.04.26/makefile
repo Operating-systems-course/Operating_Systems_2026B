@@ -1,11 +1,11 @@
 
 
 run: build
-	./main
+	./forkEx
 
 
 build:
-	gcc main.c -o main
+	gcc forkEx.c -o forkEx
 
 clean:
 	rm -lf main
