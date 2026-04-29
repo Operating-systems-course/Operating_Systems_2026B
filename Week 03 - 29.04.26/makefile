@@ -1,13 +1,13 @@
 
 
-run: build clean
-	ls -l
+run: build
+	./main
 
 
 build:
-	echo barak
+	gcc main.c -o main
 
 clean:
-	echo clean
+	rm -lf main
 
 
