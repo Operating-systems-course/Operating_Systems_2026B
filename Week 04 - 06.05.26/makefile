@@ -1,18 +1,20 @@
+CC = gcc
+FLAGS = -Wall -g
 
-
-run: build
-	./forkEx
-
+run: clean build
 
 build:
-	gcc forkEx.c -o forkEx
+	$(CC) forkEx.c -o forkEx
+	$(CC) app1.c -o app1
+	$(CC) app2.c -o app2
+	$(CC) Test.c -o test
+	$(CC) $(FLAGS) -o pipe mypipe.c
 
-test:
-	gcc app1.c -o app1
-	gcc app2.c -o app2
-
+test:clean build
+	./test
+	
+pipe: clean build
+	./pipe
 
 clean:
-	rm -lf main
-
-
+	rm -f *.o *.out pipe test forkEX app1 app2
