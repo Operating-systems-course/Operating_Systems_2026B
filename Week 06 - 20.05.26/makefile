@@ -7,6 +7,8 @@ run: clean build
 build:
 	$(CC) shell.c -o shell
 	
-	
+leak:
+	valgrind --leak-check=full ./shell
+
 clean:
 	rm -f *.o *.out shell
