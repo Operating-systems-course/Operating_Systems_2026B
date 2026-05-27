@@ -11,8 +11,9 @@ int main(int argc, char *argv[])
     {
         puts(argv[i]);
     }
-
+    //                  ls      -l      null
     char *argv1[] = {argv[1], argv[2], NULL};
+    //                grep     C
     char *argv2[] = {argv[3], argv[4], NULL};
     int fildes[2];
     if (fork() == 0)
