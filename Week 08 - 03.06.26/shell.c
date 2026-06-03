@@ -180,7 +180,11 @@ int main(int argc, char const *argv[])
         }
 
         char **argument = splitArgs(input);
-    
+        int i = 0;
+        while (*(argument + i))
+        {
+            puts(argument[i++]);
+        }
 
         if (argument[0] != NULL && strcmp(argument[0], "exit") == 0)
         {
