@@ -12,6 +12,7 @@
 #include <string.h>
 #include <pwd.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #define SIZE 256
 #define blue() printf("\033[0;34m")
 #define reset() printf("\033[0m")
@@ -64,7 +65,7 @@ char **splitArgv(char *input)
     {
         if (ch == ' ')
         {
-            input[i] = '\0'; 
+            input[i] = '\0';
             i++;
             continue;
         }
@@ -109,7 +110,11 @@ void getLocation()
         exit(1);
     }
 
-    username = getlogin();
+    username = getenv("SUDO_USER");
+    if (username == NULL)
+        username = getlogin();
+    if (username == NULL)
+        username = getenv("USER");
     if (username == NULL)
     {
         struct passwd *pw = getpwuid(getuid());
@@ -118,6 +123,10 @@ void getLocation()
 
     if (gethostname(hostname, SIZE) != 0)
         strcpy(hostname, "localhost");
+
+    char *dot = strchr(hostname, '.');
+    if (dot != NULL)
+        *dot = '\0';
 
     green();
     printf("%s", username);
@@ -160,7 +169,7 @@ int main(int argc, char const *argv[])
     char *input;
     int cnt = 0;
     welcome();
-    while (cnt < 5)
+    while (1)
     {
         getLocation();
         input = getInput();
@@ -171,11 +180,7 @@ int main(int argc, char const *argv[])
         }
 
         char **argument = splitArgs(input);
-        int i = 0;
-        while (*(argument + i))
-        {
-            puts(argument[i++]);
-        }
+    
 
         if (argument[0] != NULL && strcmp(argument[0], "exit") == 0)
         {
@@ -184,9 +189,27 @@ int main(int argc, char const *argv[])
             return 0;
         }
 
+        pid_t pid = fork();
+        if (pid < 0)
+        {
+            perror("fork");
+        }
+        else if (pid == 0)
+        {
+            execvp(argument[0], argument);
+            perror(argument[0]);
+            free(argument);
+            free(input);
+            exit(EXIT_FAILURE);
+        }
+        else
+        {
+            int status;
+            waitpid(pid, &status, 0);
+        }
+
         free(argument);
         free(input);
-        cnt++;
     }
 
     return 0;
